@@ -1,0 +1,83 @@
+<html>
+<body>
+
+
+
+<canvas id="myCanvas" width="968" height="1280" style="border:1px solid #000000;">
+
+  <script>
+  const can = document.getElementById("myCanvas");
+  const ctx = can.getContext("2d");
+
+  // https://developer.mozilla.org/en-US/docs/Web/API/WebSockets_API/Writing_WebSocket_client_applications 
+  var webSocket = new WebSocket("http://192.168.68.89:8910");
+
+  var count = 0;
+  var text = "";
+  var snd = "0";
+
+/*
+var msg = "{}";
+async function getMsg() {
+  try {
+    const response = await fetch("http://192.168.68.89:9876/msg.json");
+    if(!response.ok){
+      throw new error( "crap..." );
+    }
+    msg = await response.json();
+  } catch( error){
+    console.error(error);
+  }
+}
+*/
+
+function step(){
+  if( webSocket.readyState == WebSocket.OPEN){
+    count++;
+    webSocket.send(count);
+    if( count > 100){
+      webSocket.send("exit");
+    }
+  }
+}
+
+function draw(){
+  ctx.fillStyle = "red";
+  ctx.clearRect(0, 0, can.width, can.height);
+  ctx.font = "48px serif";
+  ctx.fillStyle = "blue";
+  ctx.fillText(JSON.stringify(text, null, 2), 10, 50);
+}
+
+
+webSocket.onopen = (event) => {
+  console.log( "hello!");
+};
+
+
+webSocket.onmessage = (event) => {
+  text = event.data;
+  draw();
+  if( text == "exit"){
+    webSocket.close();
+  }
+};
+
+webSocket.onclose = (event) => {
+  console.log( "goodbye!");
+};
+
+
+function run(){
+  step();
+  // draw();
+};
+
+setInterval(run, 16);
+  
+
+  </script>
+</canvas>
+
+</body>
+</html>
