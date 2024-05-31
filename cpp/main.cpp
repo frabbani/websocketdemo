@@ -2,7 +2,7 @@
 #include <cstdlib>
 #include <cstring>
 
-// ~/c/wsserver/Debug
+// https://github.com/Theldus/wsServer
 
 #include "ws.h"
 
@@ -34,7 +34,7 @@ int main( int argc, char *args[] ){
   struct ws_server server;
   server.host = "192.168.68.89";
   server.port = 8910;
-  server.thread_loop = 0;
+  server.thread_loop = 0;	//0 blocks
   server.timeout_ms = 3000;
   server.evs.onopen = &onopen;
   server.evs.onclose = &onclose;
